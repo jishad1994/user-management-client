@@ -1,0 +1,18 @@
+<form action="" [formGroup]="profileForm" class="flex flex-col gap-3 max-w-[400px];" (ngSubmit)="onSubmit()"
+    enctype="multipart/form-data">
+    <div>
+        <label for="">Username:</label>
+        <input type="text" formControlName="Username" />
+    </div>
+
+
+    <div>
+        <label for="">Profile Image:</label>
+        <input type="file" (change)="onFileSelected($event)">
+        <div *ngIf="imagePreview">
+            <p>preview:</p>
+            <img [src]="imagePreview" class="border mt-2.5 border-solid border-[#ccc]" alt="profilePreview" width="150">
+        </div>
+    </div>
+    <button type="submit">Update Profile</button>
+</form>
