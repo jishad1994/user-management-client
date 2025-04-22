@@ -1,41 +1,72 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
+
+interface RegisterPayload {
+  username: string;
+  email: string;
+  phone: string;
+  password: string;
+  confirmPassword?: string;
+}
+
+interface LoginPayload {
+  username: string;
+  password: string;
+}
+
+interface AuthResponse {
+  token: string;
+  user: {
+    _id: string;
+    username: string;
+    email: string;
+    role: 'user' | 'admin';
+    profileImage?: string;
+  };
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private api = 'http://localhost:5000/api/auth';
+  private BASE_URL = 'http://localhost:5000/api/auth';
+
   constructor(private http: HttpClient) {}
 
-  //signup service
-  regitser(data: any): Observable<any> {
-    return this.http.post(`${this.api}/register`, data);
+  register(data: RegisterPayload): Observable<any> {
+    return this.http.post(`${this.BASE_URL}/register`, data);
   }
 
-  //login service
-
-  login(data: any): Observable<any> {
-    return this.http.post(`${this.api}/login`, data);
+  login(data: LoginPayload): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.BASE_URL}/login`, data).pipe(
+      tap((res) => {
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('user', JSON.stringify(res.user));
+      })
+    );
   }
 
-  //logout
-  logout() {
+  logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
   }
 
-  saveSession(token: string, user: any) {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
-  }
-
-  getToken() {
+  getToken(): string | null {
     return localStorage.getItem('token');
   }
 
-  getUser() {
-    return JSON.parse(localStorage.getItem('user') || '{}');
+  getCurrentUser(): any {
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.getToken();
+  }
+
+  isAdmin(): boolean {
+    const user = this.getCurrentUser();
+    return user?.role === 'admin';
   }
 }

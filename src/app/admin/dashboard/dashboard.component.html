@@ -1,0 +1,44 @@
+<h2>Admin Dashboard</h2>
+
+<input type="text" [(ngModel)]="keyword" placeholder="Search users..." />
+<button (click)="searchUsers()">Search</button>
+
+<hr />
+
+<form [formGroup]="userForm" (ngSubmit)="saveUser()">
+  <label>Username: <input type="text" formControlName="username" /></label><br />
+  <label>Email: <input type="email" formControlName="email" /></label><br />
+  <label *ngIf="!editUserId">Password: <input type="password" formControlName="password" /></label><br />
+  <label>Role:
+    <select formControlName="role">
+      <option value="user">User</option>
+      <option value="admin">Admin</option>
+    </select>
+  </label><br />
+  <button type="submit">{{ editUserId ? 'Update' : 'Create' }} User</button>
+  <button type="button" (click)="resetForm()">Cancel</button>
+</form>
+
+<hr />
+
+<table border="1" cellpadding="5">
+  <thead>
+    <tr>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Role</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let user of users">
+      <td>{{ user.username }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.role }}</td>
+      <td>
+        <button (click)="editUser(user)">Edit</button>
+        <button (click)="deleteUser(user._id)">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
