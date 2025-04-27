@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private apiUrl = environment.apiUrl;
@@ -20,18 +20,41 @@ export class AuthService {
   }
 
   uploadProfileImage(formData: FormData): Observable<any> {
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token')}`);
-    return this.http.post(`${this.apiUrl}/auth/profile/upload`, formData, { headers });
+    const headers = new HttpHeaders().set(
+      'Authorization',
+      `Bearer ${localStorage.getItem('token')}`
+    );
+    return this.http.post(`${this.apiUrl}/auth/profile/upload`, formData, {
+      headers,
+    });
   }
 
   isAuthenticated(): boolean {
     return !!localStorage.getItem('token');
   }
 
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('token'); // or any other logic you have
+  }
+
   isAdmin(): boolean {
     const token = localStorage.getItem('token');
     if (!token) return false;
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload.role === 'admin';
+    const role = localStorage.getItem('role');
+    return role === 'admin';
+  }
+  getProfile() {
+    const header = new HttpHeaders({
+      Authorization: `Bearer ${this.getToken()}`,
+    });
+    return this.http.get(`${environment.apiUrl}/auth/getUserData`, {
+      headers: {
+        Authorization: `Bearer ${this.getToken()}`,
+      },
+    });
+  }
+
+  getToken() {
+    return localStorage.getItem('token');
   }
 }

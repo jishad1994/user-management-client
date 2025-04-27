@@ -1,17 +1,50 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import { Observable, map } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import { select, Store } from '@ngrx/store';
+import { AppState, selectProfilePic } from '../../store/auth/auth.selectors';
+import { uploadProfileImage, logout } from '../../store/auth/auth.actions';
+
+//interface for user object recieving
+interface User {
+  username?: string;
+  email?: string;
+  profileImage?: string;
+  phone?: string;
+}
 @Component({
   selector: 'app-profile',
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './profile.component.html',
-  styleUrl: './profile.component.css'
+  styleUrl: './profile.component.css',
 })
-export class ProfileComponent {
+export class ProfileComponent implements OnInit {
   selectedFile: File | null = null;
+  user: User = {};
+  profilePic = '';
+  apiUrl = environment.apiUrl;
+  profileImageUrl$!: Observable<string | undefined>;
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private http: HttpClient,
+    private store: Store<AppState>
+  ) {}
+  ngOnInit(): void {
+    // this.getUserData();
+    this.profileImageUrl$ = this.store
+      .select(selectProfilePic)
+      .pipe(
+        map((url) =>
+          url ? `${environment.apiUrl}/${url.replace(/\\/g, '/')}` : undefined
+        )
+      );
+    console.log(this.profileImageUrl$);
+  }
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -24,11 +57,25 @@ export class ProfileComponent {
     if (this.selectedFile) {
       const formData = new FormData();
       formData.append('profileImage', this.selectedFile);
-      this.authService.uploadProfileImage(formData).subscribe({
-        next: () => alert('Image uploaded successfully'),
-        error: (err:any) => alert(err.message)
-      });
+
+      this.store.dispatch(uploadProfileImage({ formData: formData }));
     }
   }
+  getUserData() {
+    this.authService.getProfile().subscribe({
+      next: (user: User) => {
+        console.log(user);
+        user.profileImage = user.profileImage?.replace(/\\/g, '/');
+        this.user = user;
+      },
+      error: (err) => {
+        alert('failed to upload profile image');
+      },
+    });
+  }
 
+  logout() {
+    console.log('logout done');
+    this.store.dispatch(logout());
+  }
 }

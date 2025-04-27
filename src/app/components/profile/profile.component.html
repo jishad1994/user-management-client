@@ -1,5 +1,25 @@
-<div class="container">
-    <h2>User Profile</h2>
-    <input type="file" (change)="onFileSelected($event)" accept="image/*" />
-    <button (click)="uploadImage()">Upload Profile Image</button>
+<div class="container p-4 max-w-xl mx-auto">
+  <button (click)="logout()" class="bg-amber-600">logout</button>
+  <h2 class="text-2xl font-bold mb-4">User Profile</h2>
+
+  <div *ngIf="user">
+    <img 
+    *ngIf="profileImageUrl$ | async as profilePic" 
+    [src]="profilePic" 
+    alt="Profile Image"
+    class="w-48 h-48 object-cover rounded-full mb-4" 
+  />
+  
+    <p><strong>Username:</strong> {{ user.username }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Phone:</strong> {{ user.phone }}</p>
   </div>
+
+  <div class="mt-4">
+    <label class="block mb-2 font-semibold">Upload New Profile Image:</label>
+    <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+    <button class="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" (click)="uploadImage()">
+      Upload
+    </button>
+  </div>
+</div>

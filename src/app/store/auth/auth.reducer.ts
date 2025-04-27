@@ -1,21 +1,52 @@
 import { createReducer, on } from '@ngrx/store';
-import { loginSuccess, loginFailure, logout } from './auth.actions';
+import {
+  loginSuccess,
+  loginFailure,
+  logout,
+  uploadProfileImageSuccess,
+} from './auth.actions';
+
+export interface User {
+  username: string;
+  email: string;
+  phone: string;
+  profileImage: string;
+  [key: string]: any;
+}
 
 export interface AuthState {
   token: string | null;
   role: string | null;
   error: string | null;
+  user: User | null;
 }
 
 export const initialState: AuthState = {
   token: null,
   role: null,
-  error: null
+  error: null,
+  user: null,
 };
 
 export const authReducer = createReducer(
   initialState,
-  on(loginSuccess, (state, { token, role }) => ({ ...state, token, role, error: null })),
-  on(loginFailure, (state, { error }) => ({ ...state, error, token: null, role: null })),
+  on(loginSuccess, (state, { token, role, user }) => ({
+    ...state,
+    token,
+    role,
+    user,
+    error: null,
+  })),
+  on(loginFailure, (state, { error }) => ({
+    ...state,
+    error,
+    token: null,
+    role: null,
+    user: null,
+  })),
+  on(uploadProfileImageSuccess, (state, { user }) => ({
+    ...state,
+    user, // 🔥 update user object after uploading profile pic
+  })),
   on(logout, () => initialState)
 );

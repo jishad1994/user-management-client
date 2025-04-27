@@ -7,11 +7,18 @@ import { AdminLoginComponent } from './components/admin/admin-login/admin-login.
 import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
 import { inject } from '@angular/core';
 import { AuthService } from './services/auth.service';
+import { adminGuard, authGuard } from './auth.guard';
 
-export const routes: Routes = [  { path: 'login', component: LoginComponent },
-    { path: 'register', component: RegisterComponent },
-    { path: 'home', component: HomeComponent, canActivate: [() => inject(AuthService).isAuthenticated()] },
-    { path: 'profile', component: ProfileComponent, canActivate: [() => inject(AuthService).isAuthenticated()] },
-    { path: 'admin/login', component: AdminLoginComponent },
-    { path: 'admin/dashboard', component: AdminDashboardComponent, canActivate: [() => inject(AuthService).isAdmin()] },
-    { path: '', redirectTo: '/login', pathMatch: 'full' }];
+export const routes: Routes = [
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'home', component: HomeComponent, canActivate: [authGuard] },
+  { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
+  { path: 'admin/login', component: AdminLoginComponent },
+  {
+    path: 'admin/dashboard',
+    component: AdminDashboardComponent,
+    canActivate: [adminGuard],
+  },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+];

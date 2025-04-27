@@ -1,7 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminService } from '../../../services/admin.service';
+import { Store } from '@ngrx/store';
+import {
+  createUser,
+  deleteUser,
+  loadUsers,
+  updateUser,
+} from '../../../store/admin/admin.actions';
+import { Observable } from 'rxjs';
+import { selectAllUsers } from '../../../store/admin/admin.selectors';
+import { logout } from '../../../store/auth/auth.actions';
 @Component({
   selector: 'app-admin-dashboard',
   imports: [CommonModule, FormsModule],
@@ -9,7 +19,8 @@ import { AdminService } from '../../../services/admin.service';
   styleUrl: './admin-dashboard.component.css',
 })
 export class AdminDashboardComponent implements OnInit {
-  users: any[] = [];
+  private store = inject(Store);
+  users$: Observable<any[]> = this.store.select(selectAllUsers);
   searchQuery = '';
   newUser: any = {
     username: '',
@@ -27,9 +38,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   loadUsers() {
-    this.adminService.getUsers(this.searchQuery).subscribe((users: any) => {
-      this.users = users;
-    });
+    this.store.dispatch(loadUsers({ search: this.searchQuery }));
   }
 
   searchUsers() {
@@ -42,23 +51,29 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   deleteUser(id: string) {
-    this.adminService.deleteUser(id).subscribe(() => this.loadUsers());
+    // this.adminService.deleteUser(id).subscribe(() => this.loadUsers());
+    this.store.dispatch(deleteUser({ id }));
   }
 
   saveUser() {
     if (this.editingUserId) {
-      this.adminService
-        .updateUser(this.editingUserId, this.newUser)
-        .subscribe(() => {
-          this.resetForm();
-          this.loadUsers();
-        });
+      // this.adminService
+      //   .updateUser(this.editingUserId, this.newUser)
+      //   .subscribe(() => {
+      //     this.resetForm();
+      //     this.loadUsers();
+      //   });
+      this.store.dispatch(
+        updateUser({ id: this.editingUserId, user: this.newUser })
+      );
     } else {
-      this.adminService.createUser(this.newUser).subscribe(() => {
-        this.resetForm();
-        this.loadUsers();
-      });
+      // this.adminService.createUser(this.newUser).subscribe(() => {
+      //   this.resetForm();
+      //   this.loadUsers();
+      // });
+      this.store.dispatch(createUser({ user: this.newUser }));
     }
+    this.resetForm();
   }
 
   resetForm() {
@@ -70,5 +85,8 @@ export class AdminDashboardComponent implements OnInit {
       role: 'user',
     };
     this.editingUserId = null;
+  }
+  logout() {
+    this.store.dispatch(logout());
   }
 }

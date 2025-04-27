@@ -30,14 +30,16 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { routes } from './app.routes';
 import { authReducer } from './store/auth/auth.reducer';
 import { AuthEffects } from './store/auth/auth.effects';
+import { adminReducer } from './store/admin/admin.reducer';
+import { AdminEffects } from './store/admin/admin.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideHttpClient(),
-    provideStore({ auth: authReducer }),
-    provideEffects([AuthEffects]),
+    provideStore({ auth: authReducer, admin: adminReducer }),
+    provideEffects([AuthEffects, AdminEffects]),
     provideStoreDevtools({ maxAge: 25, logOnly: false, connectInZone: true }),
-    provideAnimations()
-  ]
+    provideAnimations(),
+  ],
 };
