@@ -1,10 +1,13 @@
 <div class="container">
-  <button (click)="logout()">logout</button>
+  <button (click)="logout()">Logout</button>
   <h2>Admin Dashboard</h2>
+
   <input type="text" [(ngModel)]="searchQuery" (input)="searchUsers()" placeholder="Search users..." />
+
   <table>
     <thead>
       <tr>
+        <th>Profile</th>
         <th>Username</th>
         <th>Email</th>
         <th>Phone</th>
@@ -12,9 +15,8 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let user of (users$|async)">
-        <td><img *ngIf="user.profileImage" [src]="getProfileImageUrl(user.profileImage)" width="50" height="50" />
-        </td>
+      <tr *ngFor="let user of (users$ | async)">
+        <td><img *ngIf="user.profileImage" [src]="getProfileImageUrl(user.profileImage)" width="50" height="50" /></td>
         <td>{{ user.username }}</td>
         <td>{{ user.email }}</td>
         <td>{{ user.phone }}</td>
@@ -25,16 +27,30 @@
       </tr>
     </tbody>
   </table>
+
   <h3>Create/Edit User</h3>
-  <form (ngSubmit)="saveUser()">
-    <input type="text" [(ngModel)]="newUser.username" name="username" placeholder="Username" />
-    <input type="email" [(ngModel)]="newUser.email" name="email" placeholder="Email" />
-    <input type="text" [(ngModel)]="newUser.phone" name="phone" placeholder="Phone" />
-    <input type="password" [(ngModel)]="newUser.password" name="password" placeholder="Password" />
-    <select [(ngModel)]="newUser.role" name="role">
+  <form [formGroup]="userForm" (ngSubmit)="saveUser()">
+    <input type="text" formControlName="username" placeholder="Username" />
+    <div *ngIf="f['username'].touched && f['username'].invalid" class="error">Username must be at least 8 characters.
+    </div>
+
+    <input type="email" formControlName="email" placeholder="Email" />
+    <div *ngIf="f['email'].touched && f['email'].invalid" class="error">Enter a valid email address.</div>
+
+    <input type="text" formControlName="phone" placeholder="Phone" />
+    <div *ngIf="f['phone'].touched && f['phone'].invalid" class="error">Enter a valid 10-digit phone number.</div>
+
+    <input type="password" formControlName="password" placeholder="Password" />
+    <div *ngIf="f['password'].touched && f['password'].invalid" class="error">
+      Password must be at least 8 characters.
+    </div>
+
+    <select formControlName="role">
       <option value="user">User</option>
       <option value="admin">Admin</option>
     </select>
-    <button type="submit">Save</button>
+    <div *ngIf="f['role'].touched && f['role'].invalid" class="error">Role is required.</div>
+
+    <button type="submit" [disabled]="userForm.invalid">Save</button>
   </form>
 </div>
