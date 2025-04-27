@@ -13,6 +13,8 @@
     </thead>
     <tbody>
       <tr *ngFor="let user of (users$|async)">
+        <td><img *ngIf="user.profileImage" [src]="getProfileImageUrl(user.profileImage)" width="50" height="50" />
+        </td>
         <td>{{ user.username }}</td>
         <td>{{ user.email }}</td>
         <td>{{ user.phone }}</td>

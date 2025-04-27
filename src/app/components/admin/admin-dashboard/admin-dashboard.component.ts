@@ -12,6 +12,7 @@ import {
 import { Observable } from 'rxjs';
 import { selectAllUsers } from '../../../store/admin/admin.selectors';
 import { logout } from '../../../store/auth/auth.actions';
+import { environment } from '../../../../environments/environment';
 @Component({
   selector: 'app-admin-dashboard',
   imports: [CommonModule, FormsModule],
@@ -55,22 +56,16 @@ export class AdminDashboardComponent implements OnInit {
     this.store.dispatch(deleteUser({ id }));
   }
 
+  
+  
   saveUser() {
     if (this.editingUserId) {
-      // this.adminService
-      //   .updateUser(this.editingUserId, this.newUser)
-      //   .subscribe(() => {
-      //     this.resetForm();
-      //     this.loadUsers();
-      //   });
+    
       this.store.dispatch(
         updateUser({ id: this.editingUserId, user: this.newUser })
       );
     } else {
-      // this.adminService.createUser(this.newUser).subscribe(() => {
-      //   this.resetForm();
-      //   this.loadUsers();
-      // });
+   
       this.store.dispatch(createUser({ user: this.newUser }));
     }
     this.resetForm();
@@ -89,4 +84,8 @@ export class AdminDashboardComponent implements OnInit {
   logout() {
     this.store.dispatch(logout());
   }
+  getProfileImageUrl(imagePath: string): string {
+    return `${environment.apiUrl}/${imagePath.replace(/\\/g, '/')}`;
+  }
+  
 }
