@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -11,6 +11,7 @@ import {
 } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-register',
@@ -24,11 +25,12 @@ export class RegisterComponent {
   constructor(
     private authService: AuthService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private sweetAlert: AlertService
   ) {
     this.registerForm = this.fb.group(
       {
-        username: ['', [Validators.required, Validators.minLength(8)]],
+        username: ['', [Validators.required, Validators.minLength(8),this.noSpaceValidator]],
         email: ['', [Validators.required, Validators.email]],
         phone: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
         password: ['', [Validators.required, Validators.minLength(8)]],
@@ -50,21 +52,34 @@ export class RegisterComponent {
     const confirm = group.get('confirmPassword')?.value;
     return password === confirm ? null : { mismatch: true };
   }
+  //check if any spaces in the username
+  private noSpaceValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value || '';
+
+    // Check if value has any spaces
+    if (/\s/.test(value)) {
+      return { noSpace: true };
+    }
+
+    return null;
+  }
 
   onSubmit() {
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
-      alert("Form validation error");
+      this.sweetAlert.error('please enter valid details');
       return;
     }
 
     const { confirmPassword, ...payload } = this.registerForm.value;
     this.authService.register(payload).subscribe({
       next: () => {
-        alert('Registration successful');
-        this.registerForm.reset(); 
+        this.sweetAlert.success('Registration successful');
+        this.registerForm.reset();
       },
-      error: (err) => alert(err.message),
+      error: (err) => {
+        this.sweetAlert.error(err.error.message);
+      },
     });
   }
 

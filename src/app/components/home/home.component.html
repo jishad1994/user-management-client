@@ -1,5 +1,59 @@
-<div class="container">
-  <button (click)="logout()" >logout</button>
-    <h2>Welcome to the Home Page</h2>
-    <a routerLink="/profile">Go to Profile</a>
-  </div>
+<div class="min-h-screen bg-gray-50 flex flex-col">
+  <!-- Navigation Header -->
+  <header class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-indigo-600">MyApp</h1>
+      <button (click)="logout()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors duration-200 font-medium flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V4a1 1 0 00-1-1H3zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd" />
+        </svg>
+        Logout
+      </button>
+    </div>
+  </header>
+  
+  <!-- Main Content -->
+  <main class="flex-grow">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-extrabold text-gray-800 mb-4">Welcome to the Home Page</h2>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+          Explore your profile or check out what's new in our application.
+        </p>
+      </div>
+      
+      <!-- Profile Link Card -->
+      <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl hover:shadow-lg transition-shadow duration-300">
+        <div class="md:flex">
+          <div class="md:flex-shrink-0 flex items-center justify-center bg-indigo-500 md:w-48">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-white" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="p-8">
+            <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">User Area</div>
+            <a routerLink="/profile" class="block mt-1 text-lg leading-tight font-medium text-black hover:underline">View Your Profile</a>
+            <p class="mt-2 text-gray-500">Access your personal information, settings, and preferences.</p>
+            <div class="mt-4">
+              <a routerLink="/profile" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Go to Profile
+                <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 -mr-1 h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <!-- Footer -->
+  <footer class="bg-white border-t border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <p class="text-center text-gray-500 text-sm">
+        &copy; 2025 MyApp. All rights reserved.
+      </p>
+    </div>
+  </footer>
+</div>

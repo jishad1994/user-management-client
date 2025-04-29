@@ -13,5 +13,6 @@ export const selectAdminLoading = createSelector(
 );
 export const selectAdminError = createSelector(
   selectAdminState,
-  (state) => state.error
+  (state) => state.error?.message || null
 );
+

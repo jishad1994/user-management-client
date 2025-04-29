@@ -22,7 +22,10 @@ export class AdminEffects {
       mergeMap(({ search }) =>
         this.adminService.getUsers(search).pipe(
           map((users) => loadUsersSuccess({ users })),
-          catchError((error) => of(loadUsersFailure({ error })))
+          catchError((error) => of(loadUsersFailure({ error: {
+            message: error?.error?.message || 'Something went wrong',
+            status: error?.status || 500,
+          }, })))
         )
       )
     )
@@ -35,7 +38,10 @@ export class AdminEffects {
       mergeMap(({ user }) =>
         this.adminService.createUser(user).pipe(
           map(() => loadUsers({ search: '' })), // refresh users
-          catchError((error) => of(loadUsersFailure({ error })))
+          catchError((error) => of(loadUsersFailure({ error: {
+            message: error?.error?.message || 'Something went wrong',
+            status: error?.status || 500,
+          }, })))
         )
       )
     )
@@ -48,7 +54,10 @@ export class AdminEffects {
       mergeMap(({ id, user }) =>
         this.adminService.updateUser(id, user).pipe(
           map(() => loadUsers({ search: '' })), // refresh users
-          catchError((error) => of(loadUsersFailure({ error })))
+          catchError((error) => of(loadUsersFailure({ error: {
+            message: error?.error?.message || 'Something went wrong',
+            status: error?.status || 500,
+          }, })))
         )
       )
     )
@@ -61,7 +70,10 @@ export class AdminEffects {
       mergeMap(({ id }) =>
         this.adminService.deleteUser(id).pipe(
           map(() => loadUsers({ search: '' })), // refresh users
-          catchError((error) => of(loadUsersFailure({ error })))
+          catchError((error) => of(loadUsersFailure({ error: {
+            message: error?.error?.message || 'Something went wrong',
+            status: error?.status || 500,
+          }, })))
         )
       )
     )

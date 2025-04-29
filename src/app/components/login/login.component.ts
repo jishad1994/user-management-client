@@ -1,25 +1,38 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { login } from '../../store/auth/auth.actions';
 import { RouterLink } from '@angular/router';
+
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, FormsModule,RouterLink],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
 export class LoginComponent {
-  username = '';
-  password = '';
-  userProfile = '';
+  loginForm: FormGroup;
 
-  constructor(private store: Store) {}
+  constructor(private fb: FormBuilder, private store: Store) {
+    this.loginForm = this.fb.group({
+      username: ['', [Validators.required, Validators.minLength(8)]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
+    });
+  }
+
+  get f() {
+    return this.loginForm.controls;
+  }
 
   onSubmit() {
-    this.store.dispatch(
-      login({ username: this.username, password: this.password })
-    );
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
+
+    const { username, password } = this.loginForm.value;
+    this.store.dispatch(login({ username, password }));
   }
 }

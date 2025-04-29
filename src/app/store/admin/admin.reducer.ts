@@ -27,11 +27,17 @@ export const adminReducer = createReducer(
   on(loadUsersSuccess, (state, { users }) => ({
     ...state,
     users,
+    error: null,
     loading: false,
   })),
   on(loadUsersFailure, (state, { error }) => ({
     ...state,
     error,
     loading: false,
+  })),
+  on(createUser, updateUser, deleteUser, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
   }))
 );

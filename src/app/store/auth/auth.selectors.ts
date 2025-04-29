@@ -23,3 +23,7 @@ export const selectProfilePic = createSelector(
   selectAuth,
   (state: AuthState) => state?.user?.profileImage
 );
+export const selectUser = createSelector(
+  selectAuth,
+  (state: AuthState) => state?.user
+);

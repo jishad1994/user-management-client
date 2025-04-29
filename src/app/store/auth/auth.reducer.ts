@@ -4,6 +4,7 @@ import {
   loginFailure,
   logout,
   uploadProfileImageSuccess,
+  uploadProfileImageFailure,
 } from './auth.actions';
 
 export interface User {
@@ -48,5 +49,6 @@ export const authReducer = createReducer(
     ...state,
     user, // 🔥 update user object after uploading profile pic
   })),
+  on(uploadProfileImageFailure, (state, { error }) => ({ ...state, error })),
   on(logout, () => initialState)
 );

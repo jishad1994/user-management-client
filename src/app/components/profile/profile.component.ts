@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
@@ -6,8 +6,14 @@ import { Observable, map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { select, Store } from '@ngrx/store';
-import { AppState, selectProfilePic } from '../../store/auth/auth.selectors';
+import {
+  AppState,
+  selectProfilePic,
+  selectError,
+  selectUser,
+} from '../../store/auth/auth.selectors';
 import { uploadProfileImage, logout } from '../../store/auth/auth.actions';
+import { AlertService } from '../../services/alert.service';
 
 //interface for user object recieving
 interface User {
@@ -28,22 +34,35 @@ export class ProfileComponent implements OnInit {
   profilePic = '';
   apiUrl = environment.apiUrl;
   profileImageUrl$!: Observable<string | undefined>;
+  private store = inject(Store<AppState>);
+  user$ = this.store.select(selectUser);
 
-  constructor(
-    private authService: AuthService,
-    private http: HttpClient,
-    private store: Store<AppState>
-  ) {}
+  private selectError$ = this.store.select(selectError);
+  private alertService = inject(AlertService);
+  constructor(private authService: AuthService, private http: HttpClient) {}
+
   ngOnInit(): void {
     // this.getUserData();
-    this.profileImageUrl$ = this.store
-      .select(selectProfilePic)
-      .pipe(
-        map((url) =>
-          url ? `${environment.apiUrl}/${url.replace(/\\/g, '/')}` : undefined
-        )
-      );
-    console.log(this.profileImageUrl$);
+    this.profileImageUrl$ = this.store.select(selectProfilePic).pipe(
+      map((url) => {
+        if (url) {
+          return `${environment.apiUrl}/${url.replace(/\\/g, '/')}`;
+        } else if (this.user?.profileImage) {
+          return `${environment.apiUrl}/${this.user.profileImage.replace(/\\/g, '/')}`;
+        }
+        return undefined;
+      })
+    );
+
+    //shoow errors if any while uploading
+    this.selectError$.subscribe((errorMessage) => {
+      if (errorMessage) {
+        this.alertService.error(errorMessage);
+      }
+    });
+
+    //get user details from the
+    this.getUserData();
   }
 
   onFileSelected(event: Event) {

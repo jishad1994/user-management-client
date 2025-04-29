@@ -1,75 +1,138 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-  <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 space-y-6">
-    <h2 class="text-2xl font-semibold text-center">Register</h2>
+<div class="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-12">
+  <div class="w-full max-w-md bg-white rounded-xl shadow-xl overflow-hidden">
+    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4">
+      <h2 class="text-2xl font-bold text-white text-center">Create an Account</h2>
+    </div>
 
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4">
+    <div class="p-8 space-y-6">
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-5">
+        <!-- Username -->
+        <div class="space-y-2">
+          <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                fill="currentColor">
+                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <input id="username" type="text" formControlName="username" placeholder="Enter your username"
+              class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+          <p *ngIf="f['username']?.touched && f['username']?.errors?.['required']" class="text-sm text-red-600 mt-1">
+            Username is required
+          </p>
+          <p *ngIf="f['username']?.touched && f['username']?.errors?.['minlength']" class="text-sm text-red-600 mt-1">
+            Username must be at least 8 characters
+          </p>
+          <p *ngIf="f['username']?.touched && f['username'].errors?.['noSpace']" class="text-sm text-red-600 mt-1">Username cannot contain spaces
+          </p>
+        </div>
 
-      <!-- username -->
-      <div class="space-y-1">
-        <input type="text" formControlName="username" placeholder="Username"
-          class="block w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-        <p *ngIf="f['username']?.touched && f['username']?.errors?.['required']" class="text-sm text-red-600">
-          Username is required
-        </p>
-        <p *ngIf="f['username']?.touched && f['username']?.errors?.['minlength']" class="text-sm text-red-600">
-          Username must be at least 8 characters
-        </p>
+        <!-- Email -->
+        <div class="space-y-2">
+          <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                fill="currentColor">
+                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+              </svg>
+            </div>
+            <input id="email" type="email" formControlName="email" placeholder="you@example.com"
+              class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+          <p *ngIf="f['email']?.touched && f['email']?.errors?.['required']" class="text-sm text-red-600 mt-1">
+            Email is required
+          </p>
+          <p *ngIf="f['email']?.touched && f['email']?.errors?.['email']" class="text-sm text-red-600 mt-1">
+            Enter a valid email
+          </p>
+        </div>
+
+        <!-- Phone -->
+        <div class="space-y-2">
+          <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                fill="currentColor">
+                <path
+                  d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+              </svg>
+            </div>
+            <input id="phone" type="text" formControlName="phone" placeholder="phone"
+              class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+          <p *ngIf="f['phone']?.touched && f['phone']?.errors?.['required']" class="text-sm text-red-600 mt-1">
+            Phone number is required
+          </p>
+          <p *ngIf="f['phone']?.touched && f['phone']?.errors?.['pattern']" class="text-sm text-red-600 mt-1">
+            Enter a valid 10-digit phone number
+          </p>
+        </div>
+
+        <!-- Password -->
+        <div class="space-y-2">
+          <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                fill="currentColor">
+                <path fill-rule="evenodd"
+                  d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                  clip-rule="evenodd" />
+              </svg>
+            </div>
+            <input id="password" type="password" formControlName="password" placeholder="••••••••"
+              class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+          <p *ngIf="f['password']?.touched && f['password']?.errors?.['required']" class="text-sm text-red-600 mt-1">
+            Password is required
+          </p>
+          <p *ngIf="f['password']?.touched && f['password']?.errors?.['minlength']" class="text-sm text-red-600 mt-1">
+            Password must be at least 8 characters
+          </p>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="space-y-2">
+          <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                fill="currentColor">
+                <path fill-rule="evenodd"
+                  d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                  clip-rule="evenodd" />
+              </svg>
+            </div>
+            <input id="confirmPassword" type="password" formControlName="confirmPassword" placeholder="••••••••"
+              class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+          <p *ngIf="f['confirmPassword']?.touched && registerForm.hasError('mismatch')"
+            class="text-sm text-red-600 mt-1">
+            Passwords do not match
+          </p>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="pt-2">
+          <button type="submit"
+            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">
+            Create account
+          </button>
+        </div>
+      </form>
+
+      <div class="mt-4 text-center flex justify-around items-center">
+        <p class="text-sm text-gray-600">Already have an account?</p>
+        <button (click)="goToLogin()"
+          class="mt-2 w-l inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150">
+          Sign in instead
+        </button>
       </div>
-
-      <!-- email -->
-      <div class="space-y-1">
-        <input type="email" formControlName="email" placeholder="Email"
-          class="block w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-        <p *ngIf="f['email']?.touched && f['email']?.errors?.['required']" class="text-sm text-red-600">
-          Email is required
-        </p>
-        <p *ngIf="f['email']?.touched && f['email']?.errors?.['email']" class="text-sm text-red-600">
-          Enter a valid email
-        </p>
-      </div>
-
-      <!-- phone -->
-      <div class="space-y-1">
-        <input type="text" formControlName="phone" placeholder="Phone"
-          class="block w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-        <p *ngIf="f['phone']?.touched && f['phone']?.errors?.['required']" class="text-sm text-red-600">
-          Phone number is required
-        </p>
-        <p *ngIf="f['phone']?.touched && f['phone']?.errors?.['pattern']" class="text-sm text-red-600">
-          Enter a valid 10-digit phone number
-        </p>
-      </div>
-
-      <!-- password -->
-      <div class="space-y-1">
-        <input type="password" formControlName="password" placeholder="Password"
-          class="block w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-        <p *ngIf="f['password']?.touched && f['password']?.errors?.['required']" class="text-sm text-red-600">
-          Password is required
-        </p>
-        <p *ngIf="f['password']?.touched && f['password']?.errors?.['minlength']" class="text-sm text-red-600">
-          Password must be at least 8 characters
-        </p>
-      </div>
-
-      <!-- confirm password -->
-      <div class="space-y-1">
-        <input type="password" formControlName="confirmPassword" placeholder="Confirm Password"
-          class="block w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-        <p *ngIf="f['confirmPassword']?.touched && registerForm.hasError('mismatch')" class="text-sm text-red-600">
-          Passwords do not match
-        </p>
-      </div>
-
-      <!-- submit -->
-      <button type="submit"
-        class="w-full rounded-lg bg-indigo-600 py-2 font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-        Register
-      </button>
-    </form>
-
-    <button (click)="goToLogin()" class="w-full rounded-lg bg-amber-800 text-white py-2 mt-4">
-      Go to Login
-    </button>
+    </div>
   </div>
 </div>

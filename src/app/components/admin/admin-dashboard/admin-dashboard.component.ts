@@ -1,13 +1,30 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+  AbstractControl,
+  ValidationErrors,
+} from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AdminService } from '../../../services/admin.service';
-import { createUser, deleteUser, loadUsers, updateUser } from '../../../store/admin/admin.actions';
-import { selectAllUsers } from '../../../store/admin/admin.selectors';
+import {
+  createUser,
+  deleteUser,
+  loadUsers,
+  updateUser,
+} from '../../../store/admin/admin.actions';
+import {
+  selectAllUsers,
+  selectAdminError,
+} from '../../../store/admin/admin.selectors';
 import { logout } from '../../../store/auth/auth.actions';
 import { environment } from '../../../../environments/environment';
+import { AlertService } from '../../../services/alert.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -22,21 +39,31 @@ export class AdminDashboardComponent implements OnInit {
   searchQuery = '';
   userForm: FormGroup;
   editingUserId: string | null = null;
+  error$ = this.store.select(selectAdminError);
 
-  constructor(private fb: FormBuilder, private adminService: AdminService) {
-    this.userForm = this.fb.group(
-      {
-        username: ['', [Validators.required, Validators.minLength(8)]],
-        email: ['', [Validators.required, Validators.email]],
-        phone: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
-        password: ['', [Validators.minLength(8)]], // password required only for new users
-        role: ['user', Validators.required],
-      }
-    );
+  constructor(
+    private fb: FormBuilder,
+    private adminService: AdminService,
+    private alertService: AlertService
+  ) {
+    this.userForm = this.fb.group({
+      username: ['', [Validators.required, Validators.minLength(8)]],
+      email: ['', [Validators.required, Validators.email]],
+      phone: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      password: ['', [Validators.minLength(8)]], // password required only for new users
+      role: ['user', Validators.required],
+    });
   }
 
   ngOnInit() {
     this.loadUsers();
+
+    //show errors if any in the state
+    this.error$.subscribe((errorMessage) => {
+      if (errorMessage) {
+        this.alertService.error(errorMessage);
+      }
+    });
   }
 
   get f() {
@@ -79,10 +106,12 @@ export class AdminDashboardComponent implements OnInit {
     }
 
     if (this.editingUserId) {
-      this.store.dispatch(updateUser({ id: this.editingUserId, user: userData }));
+      this.store.dispatch(
+        updateUser({ id: this.editingUserId, user: userData })
+      );
     } else {
       if (!userData.password) {
-        alert("Password is required for new user creation.");
+        alert('Password is required for new user creation.');
         return;
       }
       this.store.dispatch(createUser({ user: userData }));
